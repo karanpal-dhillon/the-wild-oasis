@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import Button from "../../ui/Button";
+import PropTypes from "prop-types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteCabin } from "../../services/apiCabins";
 
 const TableRow = styled.div`
   display: grid;
@@ -41,7 +44,16 @@ const Discount = styled.div`
 `;
 
 const CabinRow = ({ cabin }) => {
-  const { name, maxCapacity, regularPrice, discount, image } = cabin;
+  const client = useQueryClient();
+  const { isLoading, mutate } = useMutation({
+    mutationFn: async ({ cabinId }) => deleteCabin(cabinId),
+    onSuccess: () => {
+      client.invalidateQueries({
+        queryKey: ["cabins"],
+      });
+    },
+  });
+  const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
   return (
     <TableRow>
       <Img src={image} />
@@ -50,12 +62,20 @@ const CabinRow = ({ cabin }) => {
       <Price>{regularPrice}</Price>
       <Discount>{discount}</Discount>
       <div>
-        <Button variation="danger" size="small">
-          Delete
+        <Button
+          variation="danger"
+          size="small"
+          onClick={() => mutate({ cabinId: id })}
+          disabled={isLoading}
+        >
+          {isLoading ? "Deleting..." : "Delete"}
         </Button>
       </div>
     </TableRow>
   );
 };
 
+CabinRow.propTypes = {
+  cabin: PropTypes.object,
+};
 export default CabinRow;

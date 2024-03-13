@@ -39,9 +39,8 @@ const CabinTable = () => {
       <TableHeader role="row">
         <div></div>
         <div>Cabin</div>
-        <div>Price</div>
         <div>Capacity</div>
-        <div>Regular Price</div>
+        <div>Price</div>
         <div>Discount</div>
       </TableHeader>
       {cabins.map((cabin) => (
