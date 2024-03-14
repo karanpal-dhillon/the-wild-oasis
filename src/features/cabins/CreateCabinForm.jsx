@@ -42,10 +42,17 @@ const Error = styled.span`
   font-size: 1.4rem;
   color: var(--color-red-700);
 `;
+
 export default function CreateCabinForm() {
   const queryClient = useQueryClient();
 
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    getValues,
+  } = useForm();
 
   const { isLoading, mutate } = useMutation({
     mutationFn: async (data) => await createCabin(data),
@@ -56,27 +63,66 @@ export default function CreateCabinForm() {
       toast.success("Cabin created successfully");
       reset();
     },
-    onError: (error) => {
+    onError: (_error) => {
       toast.error("Cabin could not be created");
     },
   });
+
   const onSubmit = async (data) => {
     mutate(data);
   };
 
+  const onError = (errors) => {
+    console.log("error", errors);
+  };
+
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(onSubmit, onError)}>
       <FormRow>
         <Label htmlFor="name">Cabin Name</Label>
-        <Input type="text" id="name" {...register("name")} />
+        <Input
+          type="text"
+          id="name"
+          {...register("name", {
+            required: "This filed is required",
+            minLength: {
+              value: "2",
+              message: "Name should be at least 2 characters",
+            },
+          })}
+        />
+        {errors?.name?.message && <Error>{errors?.name?.message}</Error>}
       </FormRow>
       <FormRow>
         <Label htmlFor="maxCapacity">Maxium Capacity</Label>
-        <Input type="text" id="maxCapacity" {...register("maxCapacity")} />
+        <Input
+          type="text"
+          id="maxCapacity"
+          {...register("maxCapacity", {
+            required: "This field is required",
+            min: {
+              value: 1,
+              message: "Max capacity should be at least 1",
+            },
+          })}
+        />
+        {errors?.maxCapacity?.message && (
+          <Error>{errors?.maxCapacity?.message}</Error>
+        )}
       </FormRow>
       <FormRow>
         <Label htmlFor="regularPrice">Regular Price</Label>
-        <Input type="text" id="regularPrice" {...register("regularPrice")} />
+        <Input
+          type="text"
+          id="regularPrice"
+          {...register("regularPrice", {
+            required: "This field is required",
+            min: { value: 1, message: "Minimum price should be at least 1" },
+          })}
+        />
+        {errors?.regularPrice?.message && (
+          <Error>{errors?.regularPrice?.message}</Error>
+        )}
       </FormRow>
       <FormRow>
         <Label htmlFor="discount">Discount</Label>
@@ -84,8 +130,19 @@ export default function CreateCabinForm() {
           type="text"
           id="discount"
           defaultValue={0}
-          {...register("discount")}
+          {...register("discount", {
+            required: "This field is required",
+            validate: (value) => {
+              return (
+                Number(value) <= Number(getValues().regularPrice) ||
+                "Discount can not be more than regular price"
+              );
+            },
+          })}
         />
+        {errors?.discount?.message && (
+          <Error>{errors?.discount?.message}</Error>
+        )}
       </FormRow>
       <FormRow>
         <Label htmlFor="description">Description for website</Label>
