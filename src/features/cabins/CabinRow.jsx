@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCabin } from "../../services/apiCabins";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import EditCabinForm from "./EditCabinForm";
 
 const TableRow = styled.div`
   display: grid;
@@ -45,6 +47,8 @@ const Discount = styled.div`
 `;
 
 const CabinRow = ({ cabin }) => {
+  const [showForm, setShowForm] = useState(false);
+
   const client = useQueryClient();
   const { isLoading, mutate } = useMutation({
     mutationFn: async ({ cabinId }) => deleteCabin(cabinId),
@@ -62,23 +66,29 @@ const CabinRow = ({ cabin }) => {
 
   const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
   return (
-    <TableRow>
-      <Img src={image} />
-      <Cabin>{name}</Cabin>
-      <div>{maxCapacity}</div>
-      <Price>{regularPrice}</Price>
-      <Discount>{discount}</Discount>
-      <div>
-        <Button
-          variation="danger"
-          size="small"
-          onClick={() => mutate({ cabinId: id })}
-          disabled={isLoading}
-        >
-          {isLoading ? "Deleting..." : "Delete"}
-        </Button>
-      </div>
-    </TableRow>
+    <>
+      <TableRow>
+        <Img src={image} />
+        <Cabin>{name}</Cabin>
+        <div>{maxCapacity}</div>
+        <Price>{regularPrice}</Price>
+        <Discount>{discount}</Discount>
+        <div>
+          <Button onClick={() => setShowForm((show) => !show)} size="small">
+            Edit
+          </Button>
+          <Button
+            variation="danger"
+            size="small"
+            onClick={() => mutate({ cabinId: id })}
+            disabled={isLoading}
+          >
+            {isLoading ? "Deleting..." : "Delete"}
+          </Button>
+        </div>
+      </TableRow>
+      {showForm && <EditCabinForm cabin={cabin} setShowForm={setShowForm} />}
+    </>
   );
 };
 
