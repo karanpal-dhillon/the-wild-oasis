@@ -19,7 +19,7 @@ export async function deleteCabin(cabinId) {
 export async function createCabin(newCabin) {
   const imageName = Math.random() + newCabin.image.name.replaceAll("/", "");
   const imageUrl = `${supabaseUrl}/storage/v1/object/public/cabinImages/${imageName}`;
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("cabins")
     .insert([{ ...newCabin, image: imageUrl }])
     .select();
@@ -34,6 +34,7 @@ export async function createCabin(newCabin) {
       upsert: false,
     });
   if (storageError) {
+    await supabase.from("cabins").delete().eq("id", data.id);
     throw new Error("Could not upload image");
   }
 }
