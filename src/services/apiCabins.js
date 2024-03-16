@@ -69,37 +69,3 @@ export async function updateCabin(data) {
     }
   }
 }
-// export async function updateCabin(updatedCabin, id) {
-//   let uploadImage = false;
-//   if (
-//     typeof updatedCabin.image !== "string" ||
-//     !updatedCabin.image.startsWith(supabaseUrl)
-//   ) {
-//     const imageName =
-//       Math.random() + updatedCabin.image[0].name.replaceAll("/", "");
-//     const imagePath = `${supabaseUrl}/storage/v1/object/public/cabinImages/${imageName}`;
-//     updatedCabin.image = imagePath;
-//     uploadImage = true;
-//   }
-//   const { _data, error } = await supabase
-//     .from("cabins")
-//     .update({ updatedCabin })
-//     .eq("id", id)
-//     .select();
-//   if (error) {
-//     throw new Error("Cabin could not be updated");
-//   }
-//   if(uploadImage){
-//   const { error: storageError } = await supabase.storage
-//     .from("cabinImages")
-//     .upload(imageName,updatedCabin.image, {
-//       cacheControl: "3600",
-//       upsert: false,
-//     });
-//   if (storageError) {
-//     await supabase.from("cabins").delete().eq("id", data.id);
-//     throw new Error("Could not upload image");
-//   }
-//
-//   }
-// }

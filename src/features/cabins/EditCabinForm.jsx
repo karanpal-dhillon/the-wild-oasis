@@ -28,7 +28,7 @@ const EditCabinForm = ({ cabin, setShowForm }) => {
   };
 
   const { mutate } = useMutation({
-    mutationFn: updateCabin,
+    mutationFn: ({ cabinData, id }) => updateCabin(cabinData, id),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["cabins"],
