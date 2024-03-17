@@ -4,13 +4,16 @@ import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import Textarea from "../../ui/TextArea";
 import { useForm } from "react-hook-form";
-import { createCabin } from "../../services/apiCabins";
+import { createEditCabin, updateCabin } from "../../services/apiCabins";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import FileInput from "../../ui/FileInput";
+import PropTypes from "prop-types";
 
-export default function CreateCabinForm() {
+export default function CreateCabinForm({ cabinToEdit = {} }) {
+  const { id: cabinId, ...restValues } = cabinToEdit;
   const queryClient = useQueryClient();
+  const isEditing = Boolean(cabinId);
 
   const {
     register,
@@ -18,10 +21,12 @@ export default function CreateCabinForm() {
     reset,
     formState: { errors },
     getValues,
-  } = useForm();
+  } = useForm({
+    defaultValues: isEditing ? restValues : {},
+  });
 
-  const { isLoading, mutate } = useMutation({
-    mutationFn: async (data) => await createCabin(data),
+  const { isLoading: isCreating, mutate: create } = useMutation({
+    mutationFn: createEditCabin,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["cabins"],
@@ -35,9 +40,31 @@ export default function CreateCabinForm() {
     },
   });
 
+  const { isLoading: isUpdating, mutate: update } = useMutation({
+    mutationFn: async ({ newCabinData, id }) =>
+      createEditCabin(newCabinData, id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["cabins"],
+      });
+      toast.success("Cabin updated successfully");
+      reset();
+    },
+    onError: (_error) => {
+      console.log(_error);
+      toast.error("Cabin could not be updated");
+    },
+  });
   const onSubmit = async (data) => {
-    mutate({ ...data, image: data.image[0] });
+    const image = typeof data.image === "string" ? data.image : data.image[0];
+    if (isEditing) {
+      update({ newCabinData: { ...data, image }, id: cabinId });
+    } else {
+      create({ ...data, image });
+    }
   };
+
+  const isWorking = isCreating || isUpdating;
 
   const onError = (errors) => {
     console.log("error", errors);
@@ -115,10 +142,14 @@ export default function CreateCabinForm() {
         <Button type="reset" variation="secondary">
           Cancel
         </Button>
-        <Button disabled={isLoading}>
-          {isLoading ? "Adding cabin..." : "Add cabin"}
+        <Button disabled={isWorking}>
+          {isEditing ? "Edit cabin" : "Add cabin"}
         </Button>
       </div>
     </Form>
   );
 }
+
+CreateCabinForm.propTypes = {
+  cabinToEdit: PropTypes.object,
+};
