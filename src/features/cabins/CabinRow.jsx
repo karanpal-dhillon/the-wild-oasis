@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabin } from "../../hooks/useDeleteCabin";
+import { useCreateCabin } from "./useCreateCabin";
 
 const TableRow = styled.div`
   display: grid;
@@ -53,7 +54,20 @@ const ActionButtonsRow = styled.div`
 const CabinRow = ({ cabin }) => {
   const [showForm, setShowForm] = useState(false);
   const { isDeleting, deleteCabin } = useDeleteCabin();
-  const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
+  const { id, name, maxCapacity, regularPrice, discount, image, description } =
+    cabin;
+  const { isCreating, create } = useCreateCabin();
+
+  const onDuplicate = () => {
+    create({
+      name: `Copy of ${cabin.name}`,
+      maxCapacity,
+      regularPrice,
+      image,
+      discount,
+      description,
+    });
+  };
   return (
     <>
       <TableRow>
@@ -61,8 +75,16 @@ const CabinRow = ({ cabin }) => {
         <Cabin>{name}</Cabin>
         <div>{maxCapacity}</div>
         <Price>{regularPrice}</Price>
-        <Discount>{discount}</Discount>
+        <Discount>{discount > 0 ? discount : "-"}</Discount>
         <ActionButtonsRow>
+          <Button
+            variation="secondary"
+            size="small"
+            onClick={onDuplicate}
+            disabled={isCreating}
+          >
+            Duplicate
+          </Button>
           <Button
             variation="secondary"
             size="small"
