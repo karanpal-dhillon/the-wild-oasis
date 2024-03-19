@@ -53,8 +53,7 @@ export async function createEditCabin(newCabin, id) {
 }
 
 export async function updateCabin(cabin, cabinId) {
-  console.log(cabin, cabinId);
-  const { data, error } = await supabase
+  const { _data, error } = await supabase
     .from("cabins")
     .update(cabin)
     .eq("id", cabinId)
