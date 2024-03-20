@@ -3,18 +3,10 @@ import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import PropTypes from "prop-types";
-import Button from "../../ui/Button";
 import { useSettings } from "./useSettings";
 import Spinner from "../../ui/Spinner";
-import { styled } from "styled-components";
 import { useSettingsUpdate } from "./useSettingsUpdate";
 
-const ButtonsRow = styled.div`
-  display: flex;
-  gap: 1rem;
-  align-items: flex-end;
-  margin-top: 2rem;
-`;
 const UpdateSettingsForm = () => {
   const {
     isLoading,
