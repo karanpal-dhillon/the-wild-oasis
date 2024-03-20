@@ -8,6 +8,12 @@ import FileInput from "../../ui/FileInput";
 import PropTypes from "prop-types";
 import { useCreateCabin } from "./useCreateCabin";
 import { useEditCabin } from "./useEditCabin";
+import { styled } from "styled-components";
+
+const ButtonsRow = styled.div`
+  display: flex;
+  gap: 2rem;
+`;
 
 export default function CreateCabinForm({ cabinToEdit = {} }) {
   const { id: cabinId, ...restValues } = cabinToEdit;
@@ -116,14 +122,14 @@ export default function CreateCabinForm({ cabinToEdit = {} }) {
       <FormRow labelText="Cabin Photo">
         <FileInput id="image" {...register("image")} />
       </FormRow>
-      <div>
+      <ButtonsRow>
         <Button type="reset" variation="secondary">
           Cancel
         </Button>
         <Button disabled={isWorking}>
           {isEditing ? "Edit cabin" : "Add cabin"}
         </Button>
-      </div>
+      </ButtonsRow>
     </Form>
   );
 }

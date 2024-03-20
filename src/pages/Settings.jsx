@@ -1,12 +1,14 @@
-import { useSettings } from "../features/settings/useSettings";
+import UpdateSettingsForm from "../features/settings/UpdateSettingsForm";
 import Heading from "../ui/Heading";
-import Spinner from "../ui/Spinner";
+import Row from "../ui/Row";
 
 const Settings = () => {
-  const { isLoading, settings } = useSettings();
-  if (isLoading) return <Spinner />;
-  console.log(settings);
-  return <Heading as="h1">Update hotel settings</Heading>;
+  return (
+    <Row>
+      <Heading as="h1">Update hotel settings</Heading>
+      <UpdateSettingsForm />
+    </Row>
+  );
 };
 
 export default Settings;
