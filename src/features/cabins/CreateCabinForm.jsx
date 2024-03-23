@@ -15,7 +15,7 @@ const ButtonsRow = styled.div`
   gap: 2rem;
 `;
 
-export default function CreateCabinForm({ cabinToEdit = {} }) {
+export default function CreateCabinForm({ cabinToEdit = {}, onClose }) {
   const { id: cabinId, ...restValues } = cabinToEdit;
   const isEditing = Boolean(cabinId);
 
@@ -40,11 +40,20 @@ export default function CreateCabinForm({ cabinToEdit = {} }) {
         {
           onSuccess: () => {
             reset();
+            onClose?.();
           },
         },
       );
     } else {
-      create({ ...data, image }, { onSuccess: () => reset() });
+      create(
+        { ...data, image },
+        {
+          onSuccess: () => {
+            reset();
+            onClose?.();
+          },
+        },
+      );
     }
   };
 
@@ -55,7 +64,10 @@ export default function CreateCabinForm({ cabinToEdit = {} }) {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onClose ? "modal" : "inline"}
+    >
       <FormRow labelText="Cabin Name" errors={errors?.name?.message}>
         <Input
           type="text"
@@ -123,7 +135,7 @@ export default function CreateCabinForm({ cabinToEdit = {} }) {
         <FileInput id="image" {...register("image")} />
       </FormRow>
       <ButtonsRow>
-        <Button type="reset" variation="secondary">
+        <Button type="reset" variation="secondary" onClick={onClose}>
           Cancel
         </Button>
         <Button disabled={isWorking}>
@@ -136,4 +148,5 @@ export default function CreateCabinForm({ cabinToEdit = {} }) {
 
 CreateCabinForm.propTypes = {
   cabinToEdit: PropTypes.object,
+  onClose: PropTypes.func,
 };

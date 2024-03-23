@@ -12,7 +12,7 @@ const AddCabin = () => {
       </Button>
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
-          <CreateCabinForm />
+          <CreateCabinForm onClose={() => setIsModalOpen(false)} />
         </Modal>
       )}
     </div>
