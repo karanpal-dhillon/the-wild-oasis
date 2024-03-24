@@ -6,6 +6,9 @@ import { createContext } from "react";
 import { useState } from "react";
 import { useContext } from "react";
 import { cloneElement } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
+import { useClose } from "../hooks/useClose";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -60,7 +63,6 @@ const Modal = ({ children }) => {
   const [openName, setOpenName] = useState("");
   const open = setOpenName;
   const close = () => setOpenName("");
-
   return (
     <ModalContext.Provider value={{ open, close, openName }}>
       {children}
@@ -79,10 +81,12 @@ const Open = ({ children, opens }) => {
 
 const Window = ({ children, name }) => {
   const { openName, close } = useContext(ModalContext);
+  const ref = useClose(close);
+
   if (name !== openName) return null;
   return createPortal(
     <Overlay>
-      <StyledModal>
+      <StyledModal ref={ref}>
         <div>
           <Button onClick={close}>
             <HiXMark />
