@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import Button from "../../ui/Button";
 import PropTypes from "prop-types";
-import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabin } from "../../hooks/useDeleteCabin";
 import { useCreateCabin } from "./useCreateCabin";
+import Modal from "../../ui/Modal";
 
 const TableRow = styled.div`
   display: grid;
@@ -52,7 +52,6 @@ const ActionButtonsRow = styled.div`
 `;
 
 const CabinRow = ({ cabin }) => {
-  const [showForm, setShowForm] = useState(false);
   const { isDeleting, deleteCabin } = useDeleteCabin();
   const { id, name, maxCapacity, regularPrice, discount, image, description } =
     cabin;
@@ -85,13 +84,16 @@ const CabinRow = ({ cabin }) => {
           >
             Duplicate
           </Button>
-          <Button
-            variation="secondary"
-            size="small"
-            onClick={() => setShowForm((show) => !show)}
-          >
-            Edit
-          </Button>
+          <Modal>
+            <Modal.Open opens="edit-cabin">
+              <Button variation="secondary" size="small">
+                Edit
+              </Button>
+            </Modal.Open>
+            <Modal.Window name="edit-cabin">
+              <CreateCabinForm cabinToEdit={cabin} />
+            </Modal.Window>
+          </Modal>
           <Button
             variation="danger"
             size="small"
@@ -102,7 +104,6 @@ const CabinRow = ({ cabin }) => {
           </Button>
         </ActionButtonsRow>
       </TableRow>
-      {showForm && <CreateCabinForm cabinToEdit={cabin} />}
     </>
   );
 };
