@@ -78,8 +78,8 @@ const CabinRow = ({ cabin }) => {
       <Discount>{discount > 0 ? discount : "-"}</Discount>
       <ActionButtonsRow>
         <Button
-          variation="secondary"
-          size="small"
+          $variation="secondary"
+          $size="small"
           onClick={onDuplicate}
           disabled={isCreating}
         >
@@ -87,7 +87,7 @@ const CabinRow = ({ cabin }) => {
         </Button>
         <Modal>
           <Modal.Open opens="edit-cabin">
-            <Button variation="secondary" size="small">
+            <Button $variation="secondary" $size="small">
               Edit
             </Button>
           </Modal.Open>
@@ -97,7 +97,7 @@ const CabinRow = ({ cabin }) => {
         </Modal>
         <Modal>
           <Modal.Open opens="confirm-delete">
-            <Button variation="danger" size="small">
+            <Button $variation="danger" $size="small">
               {isDeleting ? "Deleting..." : "Delete"}
             </Button>
           </Modal.Open>

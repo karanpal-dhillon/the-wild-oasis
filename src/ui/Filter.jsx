@@ -20,7 +20,7 @@ const FilterButton = styled.button`
   border: none;
 
   ${(props) =>
-    props.active &&
+    props.$active === "true" &&
     css`
       background-color: var(--color-brand-600);
       color: var(--color-brand-50);
@@ -42,16 +42,19 @@ const FilterButton = styled.button`
 const Filter = ({ filterField, options }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const handleClick = (value) => {
-    setSearchParams({ [filterField]: value });
+    searchParams.set([filterField], value);
+    setSearchParams(searchParams);
   };
   return (
     <StyledFilter>
       {options.map((option) => {
         return (
           <FilterButton
-            key={option.key}
+            key={option.value}
             onClick={() => handleClick(option.value)}
-            active={searchParams.get(filterField) === option.value}
+            $active={
+              searchParams.get(filterField) === option.value ? "true" : "false"
+            }
           >
             {option.label}
           </FilterButton>
