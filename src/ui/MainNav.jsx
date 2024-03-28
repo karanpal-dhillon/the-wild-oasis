@@ -86,6 +86,12 @@ const MainNav = () => {
             <span>Settings</span>
           </StyledNavLink>
         </li>
+        <li>
+          <StyledNavLink to="/seed">
+            <HiOutlineCog6Tooth />
+            <span>Data seed</span>
+          </StyledNavLink>
+        </li>
       </NavList>
     </nav>
   );

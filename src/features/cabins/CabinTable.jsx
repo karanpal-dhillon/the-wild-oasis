@@ -18,7 +18,7 @@ const CabinTable = () => {
     filteredCabins = cabins.filter((cabin) => cabin.discount > 0);
   }
 
-  const sortBy = searchParams.get("sortBy");
+  const sortBy = searchParams.get("sortBy") || "name-asc";
   const [sortKey, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
   filteredCabins = filteredCabins.sort(
